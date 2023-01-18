@@ -32,11 +32,8 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -64,71 +61,58 @@ public class NessieTeleop extends LinearOpMode {
     private DcMotor FRMotor;
     private DcMotor BLMotor;
     private DcMotor BRMotor;
-    private DcMotor Flywheel;
-    private CRServo GrabberL;
-    private Servo GrabberR;
+    private Servo Finger;
     private CRServo Spinner;
-    private DcMotor VerticalSlidePack;
+    private CRServo ElbowL;
+    private CRServo ElbowR;
+    private DcMotor VerticalSlidePackL;
+    private DcMotor VerticalSlidePackR;
     private double drive;
     private double turn;
     private final double DriveSpeed = 0.9;
     private final double SlidePackSpeed = 0.7;
-//     private final double GrabberLGrabPosition = 0.2;
-//     private final double GrabberLReleasePosition = 0.4;
-    private final double GrabberRGrabPosition = 0.0;
-    private final double GrabberRReleasePosition = 0.23;
+    private final double FingerGrabPosition = 0.0;
+    private final double FingerReleasePosition = 0.23;
     private final double SpinnerForwardPosition = 0.25;
     private final double SpinnerBackwardPosition = 0.91;
+    private final double ElbowForwardPosition = 0.0;
+    private final double ElbowBackwardPosition = 0.0;
     private PoleHeight CurrentPoleHeight = PoleHeight.GROUND;
     private final double BATTERY_LEVEL = 1;
     private ElapsedTime eTime = new ElapsedTime();
 
     @Override
     public void runOpMode () {
-        // Get motors, the expansion hub doesn't always properly connect which is why
-        // the flywheel is commented out
         FLMotor = hardwareMap.dcMotor.get("1");
         FRMotor = hardwareMap.dcMotor.get("0");
         BLMotor = hardwareMap.dcMotor.get("2");
         BRMotor = hardwareMap.dcMotor.get("3");
-//         Flywheel = hardwareMap.dcMotor.get("Fly");
-//         GrabberL = hardwareMap.crservo.get("GL");
-        GrabberR = hardwareMap.servo.get("GR");
+        Finger = hardwareMap.servo.get("FG");
         Spinner = hardwareMap.crservo.get("SP");
-//        GrabberL = hardwareMap.crservo.get("GL");
-//        GrabberR = hardwareMap.crservo.get("GR");
-//        DcMotor HorizontalSlidePack = hardwareMap.dcMotor.get("HorizontalSlidePack");
-        VerticalSlidePack = hardwareMap.dcMotor.get("VSP");
-        // VerticalSlidePack.setTargetPosition(0);
-        // VerticalSlidePack.setPower(0.3);
-        // VerticalSlidePack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        DcMotor EaterMotor = hardwareMap.dcMotor.get("Eater");
+        ElbowL = hardwareMap.crservo.get("EL");
+        ElbowR = hardwareMap.crservo.get("ER");
+        VerticalSlidePackL = hardwareMap.dcMotor.get("VSPL");
+        VerticalSlidePackR = hardwareMap.dcMotor.get("VSPR");
 
         // Set Directions
-        FLMotor.setDirection(DcMotor.Direction.FORWARD);
-        FRMotor.setDirection(DcMotor.Direction.REVERSE);
-        BLMotor.setDirection(DcMotor.Direction.FORWARD);
-        BRMotor.setDirection(DcMotor.Direction.REVERSE);
-//         Flywheel.setDirection(DcMotor.Direction.FORWARD);
-//         GrabberL.setDirection(CRServo.Direction.FORWARD);
-        GrabberR.setDirection(Servo.Direction.FORWARD);
+        FLMotor.setDirection(DcMotor.Direction.REVERSE);
+        FRMotor.setDirection(DcMotor.Direction.FORWARD);
+        BLMotor.setDirection(DcMotor.Direction.REVERSE);
+        BRMotor.setDirection(DcMotor.Direction.FORWARD);
+        Finger.setDirection(Servo.Direction.FORWARD);
         Spinner.setDirection(CRServo.Direction.FORWARD);
-//        HorizontalSlidePack.setDirection(DcMotor.Direction.FORWARD);
-        VerticalSlidePack.setDirection(DcMotor.Direction.REVERSE);
-        // VerticalSlidePack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        VerticalSlidePack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        EaterMotor.setDirection(DcMotor.Direction.FORWARD);
-        // VerticalSlidePack.setTargetPosition(0);
-        // VerticalSlidePack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        
-        // VerticalSlidePack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        
+        VerticalSlidePackL.setDirection(DcMotor.Direction.FORWARD);
+        VerticalSlidePackR.setDirection(DcMotor.Direction.REVERSE);
+
+        VerticalSlidePackL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        VerticalSlidePackR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         // wait for the coach to press start
         waitForStart();
         telemetry.addData("Status","TeleOp");
         telemetry.update();
         
-        boolean OldGrabberPushed = false;
+        boolean OldFingerPushed = false;
         boolean OldSpinnerPushed = false;
         boolean currentDirectionForward = false;
 
@@ -143,10 +127,6 @@ public class NessieTeleop extends LinearOpMode {
             }
             
             turn = gamepad1.right_stick_x;
-
-            //TANK DRIVE
-            // double LeftDrive = -gamepad1.left_stick_y;// * DriveSpeed;
-            // double RightDrive = -gamepad1.right_stick_y;// * DriveSpeed;
             
             double LeftDrive = Range.clip(drive + turn, -1.0, 1.0);
             double RightDrive = Range.clip(drive - turn, -1.0, 1.0);
@@ -191,8 +171,8 @@ public class NessieTeleop extends LinearOpMode {
             // THE CLAW
             double VerticalSlidePackForward = -gamepad2.left_stick_y * SlidePackSpeed;
 //            double VerticalSlidePackBackward = gamepad2.dpad_down ? -1 : 0;
-            boolean GrabberPushed = gamepad2.a;
-            // boolean GrabberOut = gamepad2.b;
+            boolean FingerPushed = gamepad2.a;
+            // boolean FingerOut = gamepad2.b;
             // double SpinnerForward = -gamepad2.right_stick_y;
             boolean SpinnerPushed = gamepad2.x;
             boolean GroundPoleHeight = gamepad2.dpad_down;
@@ -200,23 +180,11 @@ public class NessieTeleop extends LinearOpMode {
             boolean MediumPoleHeight = gamepad2.dpad_right;
             boolean HighPoleHeight = gamepad2.dpad_up;
             
-            // if (HighPoleHeight)
-            //     VerticalSlidePack.setTargetPosition(20);
+            boolean temp1 = isWithinRange(Finger.getPosition(), FingerGrabPosition, 0.01);
 
-//             if (GrabberIn || GrabberOut) {
-// //                 GrabberL.getController().setServoPosition(GrabberL.getPortNumber(), GrabberIn ? GrabberLGrabPosition : GrabberLReleasePosition);
-//                 GrabberR.setPosition(GrabberIn ? GrabberRGrabPosition : GrabberRReleasePosition);
-//             }
-            
-//             if (SpinnerForward != 0) {
-//                 Spinner.getController().setServoPosition(Spinner.getPortNumber(), SpinnerForward > 0 ? SpinnerForwardPosition : SpinnerBackwardPosition);
-//             }
-            
-            boolean temp1 = isWithinRange(GrabberR.getPosition(), GrabberRGrabPosition, 0.01);
-
-            if (GrabberPushed != OldGrabberPushed && GrabberPushed) {
-//                 GrabberL.getController().setServoPosition(GrabberL.getPortNumber(), GrabberIn ? GrabberLGrabPosition : GrabberLReleasePosition);
-                GrabberR.setPosition(temp1 ? GrabberRReleasePosition : GrabberRGrabPosition);
+            if (FingerPushed != OldFingerPushed && FingerPushed) {
+//                 FingerL.getController().setServoPosition(FingerL.getPortNumber(), FingerIn ? FingerLGrabPosition : FingerLReleasePosition);
+                Finger.setPosition(temp1 ? FingerReleasePosition : FingerGrabPosition);
             }
             
             boolean temp2 = isWithinRange(Spinner.getController().getServoPosition(Spinner.getPortNumber()), SpinnerForwardPosition, 0.2);
@@ -236,7 +204,8 @@ public class NessieTeleop extends LinearOpMode {
                 moveSlidePackToPosition(CurrentPoleHeight, PoleHeight.HIGH);
             }
             
-            VerticalSlidePack.setPower(VerticalSlidePackForward);
+            VerticalSlidePackL.setPower(VerticalSlidePackForward);
+            VerticalSlidePackR.setPower(VerticalSlidePackForward);
             
             if (LeftStrafe == 0 && RightStrafe == 0) {
                 FLMotor.setPower(LeftDrive);
@@ -245,18 +214,6 @@ public class NessieTeleop extends LinearOpMode {
                 BRMotor.setPower(RightDrive);
             } else if (LeftStrafe > 0) {
                 if (LeftStrafe > 0.9) {
-                    FLMotor.setPower(-1);
-                    BLMotor.setPower(1);
-                    FRMotor.setPower(1);
-                    BRMotor.setPower(-1);
-                } else {
-                    FLMotor.setPower(-0.3);
-                    BLMotor.setPower(0.3);
-                    FRMotor.setPower(0.3);
-                    BRMotor.setPower(-0.3);
-                }
-            } else if (RightStrafe > 0) {
-                if (RightStrafe > 0.9) {
                     FLMotor.setPower(1);
                     BLMotor.setPower(-1);
                     FRMotor.setPower(-1);
@@ -267,6 +224,18 @@ public class NessieTeleop extends LinearOpMode {
                     FRMotor.setPower(-0.3);
                     BRMotor.setPower(0.3);
                 }
+            } else if (RightStrafe > 0) {
+                if (RightStrafe > 0.9) {
+                    FLMotor.setPower(-1);
+                    BLMotor.setPower(1);
+                    FRMotor.setPower(1);
+                    BRMotor.setPower(-1);
+                } else {
+                    FLMotor.setPower(-0.3);
+                    BLMotor.setPower(0.3);
+                    FRMotor.setPower(0.3);
+                    BRMotor.setPower(-0.3);
+                }
             }
 
 
@@ -276,9 +245,8 @@ public class NessieTeleop extends LinearOpMode {
 //             telemetry.addData("Flywheel", FlywheelCounterClockwise + FlywheelClockwise);
 //            telemetry.addData("HorizontalSlidePack", -HorizontalSlidePackBackward + HorizontalSlidePackForward);
             telemetry.addData("VerticalSlidePack", VerticalSlidePackForward);
-            telemetry.addData("VerticalSlidePackPosition", VerticalSlidePack.getCurrentPosition());
-            telemetry.addData("GrabberIn", GrabberPushed);
-            // telemetry.addData("GrabberOut", GrabberOut);
+            telemetry.addData("FingerIn", FingerPushed);
+            // telemetry.addData("FingerOut", FingerOut);
             telemetry.addData("CurPolePosition", CurrentPoleHeight);
             telemetry.addData("GroundPoleHeight", GroundPoleHeight);
             telemetry.addData("LowPoleHeight", LowPoleHeight);
@@ -287,7 +255,7 @@ public class NessieTeleop extends LinearOpMode {
             telemetry.addData("SpinnerPushed", SpinnerPushed);
             telemetry.addData("SpinnerPosition", Spinner.getController().getServoPosition(Spinner.getPortNumber()));
             telemetry.update();
-            OldGrabberPushed = GrabberPushed;
+            OldFingerPushed = FingerPushed;
             OldSpinnerPushed = SpinnerPushed;
         }
     }
@@ -340,17 +308,20 @@ public class NessieTeleop extends LinearOpMode {
         eTime.reset();
         switch(spd) {
             case UP:
-                VerticalSlidePack.setPower(power);
+                VerticalSlidePackL.setPower(power);
+                VerticalSlidePackR.setPower(power);
                 break;
             case DOWN:
-                VerticalSlidePack.setPower(-power);
+                VerticalSlidePackL.setPower(-power);
+                VerticalSlidePackR.setPower(-power);
                 break;
         }
         while(opModeIsActive() && eTime.milliseconds() < time){
             telemetry.addData("Time:", eTime);
             telemetry.update();
         }
-        VerticalSlidePack.setPower(0);
+        VerticalSlidePackL.setPower(0);
+        VerticalSlidePackR.setPower(0);
     }
 
 }
