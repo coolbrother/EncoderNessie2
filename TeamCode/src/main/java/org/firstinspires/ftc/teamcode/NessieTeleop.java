@@ -71,12 +71,14 @@ public class NessieTeleop extends LinearOpMode {
     private double turn;
     private final double DriveSpeed = 0.9;
     private final double SlidePackSpeed = 0.7;
-    private final double FingerGrabPosition = 0.0;
-    private final double FingerReleasePosition = 0.23;
+    private final double FingerGrabPosition = 0.75;
+    private final double FingerReleasePosition = 0.85;
     private final double SpinnerForwardPosition = 0.25;
     private final double SpinnerBackwardPosition = 0.91;
-    private final double ElbowForwardPosition = 0.0;
-    private final double ElbowBackwardPosition = 0.0;
+    private final double ElbowLForwardPosition = 0.25;
+    private final double ElbowLBackwardPosition = 0.96;
+    private final double ElbowRForwardPosition = 1.0 - ElbowLForwardPosition;
+    private final double ElbowRBackwardPosition = 1.0 - ElbowLBackwardPosition;
     private PoleHeight CurrentPoleHeight = PoleHeight.GROUND;
     private final double BATTERY_LEVEL = 1;
     private ElapsedTime eTime = new ElapsedTime();
@@ -101,8 +103,8 @@ public class NessieTeleop extends LinearOpMode {
         BRMotor.setDirection(DcMotor.Direction.FORWARD);
         Finger.setDirection(Servo.Direction.FORWARD);
         Spinner.setDirection(CRServo.Direction.FORWARD);
-        VerticalSlidePackL.setDirection(DcMotor.Direction.FORWARD);
-        VerticalSlidePackR.setDirection(DcMotor.Direction.REVERSE);
+        VerticalSlidePackL.setDirection(DcMotor.Direction.REVERSE);
+        VerticalSlidePackR.setDirection(DcMotor.Direction.FORWARD);
 
         VerticalSlidePackL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         VerticalSlidePackR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -114,6 +116,7 @@ public class NessieTeleop extends LinearOpMode {
         
         boolean OldFingerPushed = false;
         boolean OldSpinnerPushed = false;
+        boolean OldElbowPushed = false;
         boolean currentDirectionForward = false;
 
         while(opModeIsActive()) {
@@ -175,6 +178,7 @@ public class NessieTeleop extends LinearOpMode {
             // boolean FingerOut = gamepad2.b;
             // double SpinnerForward = -gamepad2.right_stick_y;
             boolean SpinnerPushed = gamepad2.x;
+            boolean ElbowPushed = gamepad2.y;
             boolean GroundPoleHeight = gamepad2.dpad_down;
             boolean LowPoleHeight = gamepad2.dpad_left;
             boolean MediumPoleHeight = gamepad2.dpad_right;
@@ -190,8 +194,16 @@ public class NessieTeleop extends LinearOpMode {
             boolean temp2 = isWithinRange(Spinner.getController().getServoPosition(Spinner.getPortNumber()), SpinnerForwardPosition, 0.2);
             
             if (SpinnerPushed != OldSpinnerPushed && SpinnerPushed) {
-                currentDirectionForward = !currentDirectionForward;
+//                currentDirectionForward = !currentDirectionForward;
                 Spinner.getController().setServoPosition(Spinner.getPortNumber(), temp2 ? SpinnerBackwardPosition : SpinnerForwardPosition);
+            }
+
+            boolean temp3 = isWithinRange(ElbowR.getController().getServoPosition(ElbowR.getPortNumber()), ElbowRForwardPosition, 0.1);
+
+            if (ElbowPushed != OldElbowPushed && ElbowPushed) {
+//                currentDirectionForward = !currentDirectionForward;
+                ElbowL.getController().setServoPosition(ElbowL.getPortNumber(), temp3 ? ElbowLBackwardPosition : ElbowLForwardPosition);
+                ElbowR.getController().setServoPosition(ElbowR.getPortNumber(), temp3 ? ElbowRBackwardPosition : ElbowRForwardPosition);
             }
             
             if (GroundPoleHeight) {
@@ -214,18 +226,6 @@ public class NessieTeleop extends LinearOpMode {
                 BRMotor.setPower(RightDrive);
             } else if (LeftStrafe > 0) {
                 if (LeftStrafe > 0.9) {
-                    FLMotor.setPower(1);
-                    BLMotor.setPower(-1);
-                    FRMotor.setPower(-1);
-                    BRMotor.setPower(1);
-                } else {
-                    FLMotor.setPower(0.3);
-                    BLMotor.setPower(-0.3);
-                    FRMotor.setPower(-0.3);
-                    BRMotor.setPower(0.3);
-                }
-            } else if (RightStrafe > 0) {
-                if (RightStrafe > 0.9) {
                     FLMotor.setPower(-1);
                     BLMotor.setPower(1);
                     FRMotor.setPower(1);
@@ -235,6 +235,18 @@ public class NessieTeleop extends LinearOpMode {
                     BLMotor.setPower(0.3);
                     FRMotor.setPower(0.3);
                     BRMotor.setPower(-0.3);
+                }
+            } else if (RightStrafe > 0) {
+                if (RightStrafe > 0.9) {
+                    FLMotor.setPower(1);
+                    BLMotor.setPower(-1);
+                    FRMotor.setPower(-1);
+                    BRMotor.setPower(1);
+                } else {
+                    FLMotor.setPower(0.3);
+                    BLMotor.setPower(-0.3);
+                    FRMotor.setPower(-0.3);
+                    BRMotor.setPower(0.3);
                 }
             }
 
@@ -257,6 +269,7 @@ public class NessieTeleop extends LinearOpMode {
             telemetry.update();
             OldFingerPushed = FingerPushed;
             OldSpinnerPushed = SpinnerPushed;
+            OldElbowPushed = ElbowPushed;
         }
     }
     
