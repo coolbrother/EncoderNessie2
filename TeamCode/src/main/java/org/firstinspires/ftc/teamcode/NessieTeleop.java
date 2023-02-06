@@ -73,14 +73,14 @@ public class NessieTeleop extends LinearOpMode {
     private double turn;
     private final double DriveSpeed = 0.9;
     private final double SlidePackSpeed = 0.7;
-    private final double FingerGrabPosition = 0.75;
-    private final double FingerReleasePosition = 0.85;
+    private final double FingerReleasePosition = 0.5;
+    private final double FingerGrabPosition = 0.88;
     private final double SpinnerForwardPosition = 0.25;
     private final double SpinnerBackwardPosition = 1.0; // 0.91;
     private final double SpinnerIntermediatePosition = 0.38;
     //    private final double SpinnerGrabbingPosition = 1.0;
     private final double ElbowLForwardPosition = 0.21;
-    private final double ElbowLBackwardPosition = 0.98;
+    private final double ElbowLBackwardPosition = 1.0;
     private final double ElbowLIntermediatePosition = 0.38;
     private final double ElbowRForwardPosition = 1.0 - ElbowLForwardPosition;
     private final double ElbowRBackwardPosition = 1.0 - ElbowLBackwardPosition;
@@ -103,6 +103,13 @@ public class NessieTeleop extends LinearOpMode {
             }
         }
 
+        class closeClaw extends TimerTask {
+            public void run() {
+                Finger.setPosition(FingerGrabPosition);
+//                sleep(5000);
+            }
+        }
+
         FLMotor = hardwareMap.dcMotor.get("1");
         FRMotor = hardwareMap.dcMotor.get("0");
         BLMotor = hardwareMap.dcMotor.get("2");
@@ -115,7 +122,7 @@ public class NessieTeleop extends LinearOpMode {
         VerticalSlidePackR = hardwareMap.dcMotor.get("VSPR");
 
         // Set Directions
-        FLMotor.setDirection(DcMotor.Direction.REVERSE);
+        FLMotor.setDirection(DcMotor.Direction.FORWARD);
         FRMotor.setDirection(DcMotor.Direction.FORWARD);
         BLMotor.setDirection(DcMotor.Direction.REVERSE);
         BRMotor.setDirection(DcMotor.Direction.FORWARD);
@@ -184,10 +191,10 @@ public class NessieTeleop extends LinearOpMode {
             double LeftStrafe = gamepad1.left_trigger;
             double RightStrafe = gamepad1.right_trigger;
 
-            if (!currentDirectionForward) {
-                LeftStrafe = gamepad1.right_trigger;
-                RightStrafe = gamepad1.left_trigger;
-            }
+//            if (!currentDirectionForward) {
+//                LeftStrafe = gamepad1.right_trigger;
+//                RightStrafe = gamepad1.left_trigger;
+//            }
 
             // THE CLAW
             double VerticalSlidePackForward = -gamepad2.left_stick_y * SlidePackSpeed;
@@ -204,11 +211,6 @@ public class NessieTeleop extends LinearOpMode {
 
             boolean temp1 = isWithinRange(Finger.getPosition(), FingerGrabPosition, 0.01);
 
-            if (FingerPushed != OldFingerPushed && FingerPushed) {
-//                 FingerL.getController().setServoPosition(FingerL.getPortNumber(), FingerIn ? FingerLGrabPosition : FingerLReleasePosition);
-                Finger.setPosition(temp1 ? FingerReleasePosition : FingerGrabPosition);
-            }
-
             boolean temp2 = isWithinRange(Spinner.getController().getServoPosition(Spinner.getPortNumber()), SpinnerForwardPosition, 0.1);
 //            if (gamepad2.b) {
 //                Spinner.getController().setServoPosition(Spinner.getPortNumber(), SpinnerGrabbingPosition);
@@ -220,6 +222,16 @@ public class NessieTeleop extends LinearOpMode {
 //            }
 
             boolean temp3 = isWithinRange(ElbowR.getController().getServoPosition(ElbowR.getPortNumber()), ElbowRForwardPosition, 0.1);
+
+            if (FingerPushed != OldFingerPushed && FingerPushed) {
+                if (temp3) {
+                    Finger.setPosition(FingerReleasePosition);
+                    timer.schedule(new closeClaw(), 300);
+                } else {
+                    Finger.setPosition(temp1 ? FingerReleasePosition : FingerGrabPosition);
+                }
+//                 FingerL.getController().setServoPosition(FingerL.getPortNumber(), FingerIn ? FingerLGrabPosition : FingerLReleasePosition);
+            }
 
             if (ElbowPushed != OldElbowPushed && ElbowPushed) {
                 if (temp3) {
