@@ -73,18 +73,18 @@ public class NessieTeleop extends LinearOpMode {
     private double turn;
     private final double DriveSpeed = 0.9;
     private final double SlidePackSpeed = 0.7;
-    private final double FingerReleasePosition = 0.5;
-    private final double FingerGrabPosition = 0.88;
-    private final double SpinnerForwardPosition = 0.25;
-    private final double SpinnerBackwardPosition = 1.0; // 0.91;
-    private final double SpinnerIntermediatePosition = 0.38;
+    private final double FingerReleasePosition = 0.61;
+    private final double FingerGrabPosition = 0.65;
+    private final double SpinnerForwardPosition = 0.9;
+    private final double SpinnerBackwardPosition = 0.3; // 0.91;
+    private final double SpinnerIntermediatePosition = 0.68;
     //    private final double SpinnerGrabbingPosition = 1.0;
-    private final double ElbowLForwardPosition = 0.21;
-    private final double ElbowLBackwardPosition = 1.0;
-    private final double ElbowLIntermediatePosition = 0.38;
-    private final double ElbowRForwardPosition = 1.0 - ElbowLForwardPosition;
-    private final double ElbowRBackwardPosition = 1.0 - ElbowLBackwardPosition;
-    private final double ElbowRIntermediatePosition = 1.0 - ElbowLIntermediatePosition;
+    private final double ElbowLForwardPosition = 0.15;
+    private final double ElbowLBackwardPosition = 0.97;
+    private final double ElbowLIntermediatePosition = 0.39;
+    private final double ElbowRForwardPosition = 0.81;
+    private final double ElbowRBackwardPosition = 0.03;
+    private final double ElbowRIntermediatePosition = 0.575;
     private PoleHeight CurrentPoleHeight = PoleHeight.GROUND;
     private final double BATTERY_LEVEL = 1;
     private ElapsedTime eTime = new ElapsedTime();
@@ -221,7 +221,7 @@ public class NessieTeleop extends LinearOpMode {
 //
 //            }
 
-            boolean temp3 = isWithinRange(ElbowR.getController().getServoPosition(ElbowR.getPortNumber()), ElbowRForwardPosition, 0.1);
+            boolean temp3 = isWithinRange(ElbowR.getController().getServoPosition(ElbowR.getPortNumber()), ElbowRIntermediatePosition, 0.1);
 
             if (FingerPushed != OldFingerPushed && FingerPushed) {
                 if (temp3) {
