@@ -76,14 +76,14 @@ public class NessieTeleop extends LinearOpMode {
     private final double FingerReleasePosition = 0.61;
     private final double FingerGrabPosition = 0.65;
     private final double SpinnerForwardPosition = 0.9;
-    private final double SpinnerBackwardPosition = 0.3; // 0.91;
+    private final double SpinnerBackwardPosition = 0.35; // 0.91;
     private final double SpinnerIntermediatePosition = 0.68;
     //    private final double SpinnerGrabbingPosition = 1.0;
     private final double ElbowLForwardPosition = 0.15;
-    private final double ElbowLBackwardPosition = 0.97;
+    private final double ElbowLBackwardPosition = 0.95;
     private final double ElbowLIntermediatePosition = 0.39;
     private final double ElbowRForwardPosition = 0.81;
-    private final double ElbowRBackwardPosition = 0.03;
+    private final double ElbowRBackwardPosition = 0.05;
     private final double ElbowRIntermediatePosition = 0.575;
     private PoleHeight CurrentPoleHeight = PoleHeight.GROUND;
     private final double BATTERY_LEVEL = 1;
@@ -191,11 +191,6 @@ public class NessieTeleop extends LinearOpMode {
             double LeftStrafe = gamepad1.left_trigger;
             double RightStrafe = gamepad1.right_trigger;
 
-//            if (!currentDirectionForward) {
-//                LeftStrafe = gamepad1.right_trigger;
-//                RightStrafe = gamepad1.left_trigger;
-//            }
-
             // THE CLAW
             double VerticalSlidePackForward = -gamepad2.left_stick_y * SlidePackSpeed;
 //            double VerticalSlidePackBackward = gamepad2.dpad_down ? -1 : 0;
@@ -209,39 +204,31 @@ public class NessieTeleop extends LinearOpMode {
             boolean MediumPoleHeight = gamepad2.dpad_right;
             boolean HighPoleHeight = gamepad2.dpad_up;
 
-            boolean temp1 = isWithinRange(Finger.getPosition(), FingerGrabPosition, 0.01);
+            boolean isFingerInGrabPosition = isWithinRange(Finger.getPosition(), FingerGrabPosition, 0.01);
 
-            boolean temp2 = isWithinRange(Spinner.getController().getServoPosition(Spinner.getPortNumber()), SpinnerForwardPosition, 0.1);
-//            if (gamepad2.b) {
-//                Spinner.getController().setServoPosition(Spinner.getPortNumber(), SpinnerGrabbingPosition);
-//            }
+//            boolean temp2 = isWithinRange(Spinner.getController().getServoPosition(Spinner.getPortNumber()), SpinnerForwardPosition, 0.1);
 
-//            if (lowerElbow != OldLowerElbow && lowerElbow) {
-////                currentDirectionForward = !currentDirectionForward;
-//
-//            }
-
-            boolean temp3 = isWithinRange(ElbowR.getController().getServoPosition(ElbowR.getPortNumber()), ElbowRIntermediatePosition, 0.1);
+            boolean areElbowsForward = isWithinRange(ElbowR.getController().getServoPosition(ElbowR.getPortNumber()), ElbowRForwardPosition, 0.1);
+            boolean areElbowsIntermediate = isWithinRange(ElbowR.getController().getServoPosition(ElbowR.getPortNumber()), ElbowRIntermediatePosition, 0.1);
 
             if (FingerPushed != OldFingerPushed && FingerPushed) {
-                if (temp3) {
+                if (areElbowsForward) {
                     Finger.setPosition(FingerReleasePosition);
                     timer.schedule(new closeClaw(), 300);
                 } else {
-                    Finger.setPosition(temp1 ? FingerReleasePosition : FingerGrabPosition);
+                    Finger.setPosition(isFingerInGrabPosition ? FingerReleasePosition : FingerGrabPosition);
                 }
-//                 FingerL.getController().setServoPosition(FingerL.getPortNumber(), FingerIn ? FingerLGrabPosition : FingerLReleasePosition);
             }
 
             if (ElbowPushed != OldElbowPushed && ElbowPushed) {
-                if (temp3) {
-                    Spinner.getController().setServoPosition(Spinner.getPortNumber(), SpinnerIntermediatePosition);
-                    ElbowL.getController().setServoPosition(ElbowL.getPortNumber(), ElbowLIntermediatePosition);
-                    ElbowR.getController().setServoPosition(ElbowR.getPortNumber(), ElbowRIntermediatePosition);
-                } else {
+                if (areElbowsIntermediate) {
                     Spinner.getController().setServoPosition(Spinner.getPortNumber(), SpinnerForwardPosition);
                     ElbowL.getController().setServoPosition(ElbowL.getPortNumber(), ElbowLForwardPosition);
                     ElbowR.getController().setServoPosition(ElbowR.getPortNumber(), ElbowRForwardPosition);
+                } else {
+                    Spinner.getController().setServoPosition(Spinner.getPortNumber(), SpinnerIntermediatePosition);
+                    ElbowL.getController().setServoPosition(ElbowL.getPortNumber(), ElbowLIntermediatePosition);
+                    ElbowR.getController().setServoPosition(ElbowR.getPortNumber(), ElbowRIntermediatePosition);
                 }
             }
 
@@ -249,13 +236,13 @@ public class NessieTeleop extends LinearOpMode {
                 Spinner.getController().setServoPosition(Spinner.getPortNumber(), SpinnerBackwardPosition);
                 ElbowL.getController().setServoPosition(ElbowL.getPortNumber(), ElbowLBackwardPosition - 0.05);
                 ElbowR.getController().setServoPosition(ElbowR.getPortNumber(), ElbowRBackwardPosition + 0.05);
-                telemetry.addData("AA",2);
-                telemetry.update();
-//                sleep(5000);
+//                telemetry.addData("AA",2);
+//                telemetry.update();
+////                sleep(5000);
                 timer.schedule(new lowerArm(), 1000);
-                telemetry.addData("AA",3);
-                telemetry.update();
-//                sleep(5000);
+//                telemetry.addData("AA",3);
+//                telemetry.update();
+////                sleep(5000);
             }
 
             if (GroundPoleHeight) {
