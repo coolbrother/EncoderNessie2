@@ -122,7 +122,7 @@ public class NessieTeleop extends LinearOpMode {
         VerticalSlidePackR = hardwareMap.dcMotor.get("VSPR");
 
         // Set Directions
-        FLMotor.setDirection(DcMotor.Direction.FORWARD);
+        FLMotor.setDirection(DcMotor.Direction.REVERSE);
         FRMotor.setDirection(DcMotor.Direction.FORWARD);
         BLMotor.setDirection(DcMotor.Direction.REVERSE);
         BRMotor.setDirection(DcMotor.Direction.FORWARD);
@@ -150,9 +150,9 @@ public class NessieTeleop extends LinearOpMode {
             //Driver 1
             drive = -gamepad1.left_stick_y;
 
-            if (!currentDirectionForward) {
-                drive *= -1;
-            }
+//            if (!currentDirectionForward) {
+//                drive *= -1;
+//            }
 
             turn = gamepad1.right_stick_x;
 
