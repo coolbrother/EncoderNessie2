@@ -72,12 +72,12 @@ public class NessieTeleop extends LinearOpMode {
     private double drive;
     private double turn;
     private final double DriveSpeed = 0.9;
-    private final double SlidePackSpeed = 0.7;
+    private final double SlidePackSpeed = 1.0;
     private final double FingerReleasePosition = 0.61;
     private final double FingerGrabPosition = 0.65;
-    private final double SpinnerForwardPosition = 0.9;
-    private final double SpinnerBackwardPosition = 0.35; // 0.91;
-    private final double SpinnerIntermediatePosition = 0.68;
+    private final double SpinnerForwardPosition = .6;//0.9;
+    private final double SpinnerBackwardPosition = .05; //0.35;
+    private final double SpinnerIntermediatePosition = .78; //0.68;
     //    private final double SpinnerGrabbingPosition = 1.0;
     private final double ElbowLForwardPosition = 0.15;
     private final double ElbowLBackwardPosition = 0.95;
@@ -164,29 +164,30 @@ public class NessieTeleop extends LinearOpMode {
             telemetry.addData("x", gamepad1.left_stick_x);
             telemetry.addData("y", gamepad1.left_stick_y);
 
-            if (LeftDrive > 0.9) {
-                LeftDrive = DriveSpeed;
-            } else if (LeftDrive > 0) {
-                LeftDrive = 0.3 * DriveSpeed;
-            } else if (LeftDrive < -0.9) {
-                LeftDrive = -DriveSpeed;
-            } else if (LeftDrive < 0) {
-                LeftDrive = 0.3 * -DriveSpeed;
-            } else {
-                LeftDrive = 0;
-            }
+//            if (LeftDrive > 0.9) {
+//                LeftDrive = DriveSpeed;
+//            } else if (LeftDrive > 0) {
+//                LeftDrive = 0.3 * DriveSpeed;
+//            } else if (LeftDrive < -0.9) {
+//                LeftDrive = -DriveSpeed;
+//            } else if (LeftDrive < 0) {
+//                LeftDrive = 0.3 * -DriveSpeed;
+//            } else {
+//                LeftDrive = 0;
+//            }
+//
+//            if (RightDrive > 0.9) {
+//                RightDrive = DriveSpeed;
+//            } else if (RightDrive > 0) {
+//                RightDrive = 0.3 * DriveSpeed;
+//            } else if (RightDrive < -0.9) {
+//                RightDrive = -DriveSpeed;
+//            } else if (RightDrive < 0) {
+//                RightDrive = 0.3 * -DriveSpeed;
+//            } else {
+//                RightDrive = 0;
+//            }
 
-            if (RightDrive > 0.9) {
-                RightDrive = DriveSpeed;
-            } else if (RightDrive > 0) {
-                RightDrive = 0.3 * DriveSpeed;
-            } else if (RightDrive < -0.9) {
-                RightDrive = -DriveSpeed;
-            } else if (RightDrive < 0) {
-                RightDrive = 0.3 * -DriveSpeed;
-            } else {
-                RightDrive = 0;
-            }
 
             double LeftStrafe = gamepad1.left_trigger;
             double RightStrafe = gamepad1.right_trigger;
@@ -209,12 +210,12 @@ public class NessieTeleop extends LinearOpMode {
 //            boolean temp2 = isWithinRange(Spinner.getController().getServoPosition(Spinner.getPortNumber()), SpinnerForwardPosition, 0.1);
 
             boolean areElbowsForward = isWithinRange(ElbowR.getController().getServoPosition(ElbowR.getPortNumber()), ElbowRForwardPosition, 0.1);
-            boolean areElbowsIntermediate = isWithinRange(ElbowR.getController().getServoPosition(ElbowR.getPortNumber()), ElbowRIntermediatePosition, 0.1);
+            boolean areElbowsIntermediate = isWithinRange(ElbowR.getController().getServoPosition(ElbowR.getPortNumber()), ElbowRIntermediatePosition, 0.01);
 
             if (FingerPushed != OldFingerPushed && FingerPushed) {
-                if (areElbowsForward) {
+                if (areElbowsForward || areElbowsIntermediate) {
                     Finger.setPosition(FingerReleasePosition);
-                    timer.schedule(new closeClaw(), 300);
+                    timer.schedule(new closeClaw(), 400);
                 } else {
                     Finger.setPosition(isFingerInGrabPosition ? FingerReleasePosition : FingerGrabPosition);
                 }

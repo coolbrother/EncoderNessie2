@@ -15,11 +15,24 @@ public class EncoderNessieAuto extends LinearOpMode {
     public void runOpMode() {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
-        Pose2d startPose = new Pose2d(-36, 60, Math.toRadians(270));
+        Pose2d startPose = new Pose2d(36, -60, Math.toRadians(90));
+
+        drive.setPoseEstimate(startPose);
 
         TrajectorySequence ts = drive.trajectorySequenceBuilder(startPose)
-                .splineTo(new Vector2d(0, -24), Math.toRadians(270))
-//                .splineTo(new Vector2d(12, -48), Math.toRadians(0))
+//                .lineToConstantHeading(new Vector2d(60, -60))
+//                .lineToLinearHeading(new Pose2d(60, -12, Math.toRadians(180)))
+//                .splineTo(new Vector2d(50, -10), Math.toRadians(150))
+//                .splineTo(new Vector2d(60, -12), Math.toRadians(180))
+//                .lineToConstantHeading(new Vector2d(36, -12))
+//                .lineToConstantHeading(new Vector2d(36, -36))
+                .lineTo(new Vector2d(36, -12))
+                .turn(Math.toRadians(90))
+                .lineTo(new Vector2d(60, -12))
+                .splineTo(new Vector2d(48, -12), Math.toRadians(150))
+                .splineTo(new Vector2d(60, -12), Math.toRadians(180))
+                .splineToLinearHeading(new Pose2d(36, -12), Math.toRadians(90))
+                .back(24)
                 .build();
 
         waitForStart();
