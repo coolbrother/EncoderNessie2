@@ -59,6 +59,12 @@ public class NessieTeleop extends LinearOpMode {
         GROUND
     }
 
+    enum FingerHeight {
+        LOW,
+        MEDIUM,
+        HIGH
+    }
+
     private DcMotor FLMotor;
     private DcMotor FRMotor;
     private DcMotor BLMotor;
@@ -86,13 +92,14 @@ public class NessieTeleop extends LinearOpMode {
     private final double ElbowRBackwardPosition = 0.05;
     private final double ElbowRIntermediatePosition = 0.575;
     private PoleHeight CurrentPoleHeight = PoleHeight.GROUND;
+    private FingerHeight CurrentFingerHeight = FingerHeight.LOW;
     private final double BATTERY_LEVEL = 1;
     private ElapsedTime eTime = new ElapsedTime();
     private Timer timer = new Timer();
     @Override
     public void runOpMode () {
 
-        class lowerArm extends TimerTask {
+        class lowerArmToLowPosition extends TimerTask {
             public void run() {
                 ElbowL.getController().setServoPosition(ElbowL.getPortNumber(), ElbowLBackwardPosition );
                 ElbowR.getController().setServoPosition(ElbowR.getPortNumber(), ElbowRBackwardPosition );
@@ -103,9 +110,34 @@ public class NessieTeleop extends LinearOpMode {
             }
         }
 
+        class lowerArmToMediumPosition extends TimerTask {
+            public void run() {
+
+                ElbowL.getController().setServoPosition(ElbowL.getPortNumber(), ElbowLBackwardPosition - 0.05);
+                ElbowR.getController().setServoPosition(ElbowR.getPortNumber(), ElbowRBackwardPosition + 0.05);
+            }
+        }
+
+        class lowerArmToHighPosition extends TimerTask {
+            public void run() {
+                ElbowL.getController().setServoPosition(ElbowL.getPortNumber(), ElbowLBackwardPosition - 0.1);
+                ElbowR.getController().setServoPosition(ElbowR.getPortNumber(), ElbowRBackwardPosition + 0.1);
+
+                telemetry.addData("AAAAA", 3);
+                telemetry.update();
+            }
+        }
+
         class closeClaw extends TimerTask {
             public void run() {
                 Finger.setPosition(FingerGrabPosition);
+//                sleep(5000);
+            }
+        }
+
+        class openClaw extends TimerTask {
+            public void run() {
+                Finger.setPosition(FingerReleasePosition);
 //                sleep(5000);
             }
         }
@@ -140,8 +172,10 @@ public class NessieTeleop extends LinearOpMode {
         telemetry.update();
 
         boolean OldFingerPushed = false;
-        boolean OldLowerElbow = false;
         boolean OldElbowPushed = false;
+        boolean OldLowFingerHeight = false;
+        boolean OldMediumFingerHeight = false;
+        boolean OldHighFingerHeight = false;
         boolean currentDirectionForward = false;
 
         while(opModeIsActive()) {
@@ -149,11 +183,6 @@ public class NessieTeleop extends LinearOpMode {
 
             //Driver 1
             drive = -gamepad1.left_stick_y;
-
-//            if (!currentDirectionForward) {
-//                drive *= -1;
-//            }
-
             turn = gamepad1.right_stick_x;
 
             double LeftDrive = Range.clip(drive + turn, -1.0, 1.0);
@@ -188,22 +217,16 @@ public class NessieTeleop extends LinearOpMode {
 //                RightDrive = 0;
 //            }
 
-
             double LeftStrafe = gamepad1.left_trigger;
             double RightStrafe = gamepad1.right_trigger;
 
             // THE CLAW
             double VerticalSlidePackForward = -gamepad2.left_stick_y * SlidePackSpeed;
-//            double VerticalSlidePackBackward = gamepad2.dpad_down ? -1 : 0;
             boolean FingerPushed = gamepad2.a;
-            // boolean FingerOut = gamepad2.b;
-            // double SpinnerForward = -gamepad2.right_stick_y;
-            boolean lowerElbow = gamepad2.x;
             boolean ElbowPushed = gamepad2.y;
-            boolean GroundPoleHeight = gamepad2.dpad_down;
-            boolean LowPoleHeight = gamepad2.dpad_left;
-            boolean MediumPoleHeight = gamepad2.dpad_right;
-            boolean HighPoleHeight = gamepad2.dpad_up;
+            boolean LowFingerHeight = gamepad2.dpad_down;
+            boolean MediumFingerHeight = gamepad2.dpad_left || gamepad2.dpad_right;
+            boolean HighFingerHeight = gamepad2.dpad_up;
 
             boolean isFingerInGrabPosition = isWithinRange(Finger.getPosition(), FingerGrabPosition, 0.01);
 
@@ -222,6 +245,7 @@ public class NessieTeleop extends LinearOpMode {
             }
 
             if (ElbowPushed != OldElbowPushed && ElbowPushed) {
+                Finger.setPosition(FingerGrabPosition);
                 if (areElbowsIntermediate) {
                     Spinner.getController().setServoPosition(Spinner.getPortNumber(), SpinnerForwardPosition);
                     ElbowL.getController().setServoPosition(ElbowL.getPortNumber(), ElbowLForwardPosition);
@@ -233,27 +257,33 @@ public class NessieTeleop extends LinearOpMode {
                 }
             }
 
-            if (lowerElbow != OldLowerElbow && lowerElbow) {
-                Spinner.getController().setServoPosition(Spinner.getPortNumber(), SpinnerBackwardPosition);
-                ElbowL.getController().setServoPosition(ElbowL.getPortNumber(), ElbowLBackwardPosition - 0.05);
-                ElbowR.getController().setServoPosition(ElbowR.getPortNumber(), ElbowRBackwardPosition + 0.05);
-//                telemetry.addData("AA",2);
-//                telemetry.update();
-////                sleep(5000);
-                timer.schedule(new lowerArm(), 1000);
-//                telemetry.addData("AA",3);
-//                telemetry.update();
-////                sleep(5000);
-            }
+            if (LowFingerHeight != OldLowFingerHeight && LowFingerHeight) CurrentFingerHeight = FingerHeight.LOW;
+            if (MediumFingerHeight != OldMediumFingerHeight && MediumFingerHeight) CurrentFingerHeight = FingerHeight.MEDIUM;
+            if (HighFingerHeight != OldHighFingerHeight && HighFingerHeight) CurrentFingerHeight = FingerHeight.HIGH;
 
-            if (GroundPoleHeight) {
-                moveSlidePackToPosition(CurrentPoleHeight, PoleHeight.GROUND);
-            } else if (LowPoleHeight) {
-                moveSlidePackToPosition(CurrentPoleHeight, PoleHeight.LOW);
-            } else if (MediumPoleHeight) {
-                moveSlidePackToPosition(CurrentPoleHeight, PoleHeight.MEDIUM);
-            } else if (HighPoleHeight) {
-                moveSlidePackToPosition(CurrentPoleHeight, PoleHeight.HIGH);
+            if ((LowFingerHeight != OldLowFingerHeight && LowFingerHeight)
+                    || (MediumFingerHeight != OldMediumFingerHeight && MediumFingerHeight)
+                    || (HighFingerHeight != OldHighFingerHeight && HighFingerHeight)) {
+                if (areElbowsForward || areElbowsIntermediate) {
+                    Spinner.getController().setServoPosition(Spinner.getPortNumber(), SpinnerBackwardPosition);
+                    timer.schedule(new openClaw(), 800);
+                }
+                switch (CurrentFingerHeight) {
+                    case LOW:
+                        if (areElbowsForward || areElbowsIntermediate) {
+                            timer.schedule(new lowerArmToMediumPosition(), 0);
+                            timer.schedule(new lowerArmToLowPosition(), 1000);
+                        } else {
+                            timer.schedule(new lowerArmToLowPosition(), 0);
+                        }
+                        break;
+                    case MEDIUM:
+                        timer.schedule(new lowerArmToMediumPosition(), 0);
+                        break;
+                    case HIGH:
+                        timer.schedule(new lowerArmToHighPosition(), 0);
+                        break;
+                }
             }
 
             if (VerticalSlidePackForward != 0.0) {
@@ -299,22 +329,17 @@ public class NessieTeleop extends LinearOpMode {
             // add random telemetry stuff (shows up on driver station app) cuz why not
             telemetry.addData("LeftDrive", LeftDrive);
             telemetry.addData("RightDrive", RightDrive);
-//             telemetry.addData("Flywheel", FlywheelCounterClockwise + FlywheelClockwise);
-//            telemetry.addData("HorizontalSlidePack", -HorizontalSlidePackBackward + HorizontalSlidePackForward);
             telemetry.addData("VerticalSlidePack", VerticalSlidePackForward);
-            telemetry.addData("FingerIn", FingerPushed);
-            telemetry.addData("SpinnerIn", lowerElbow);
-            telemetry.addData("CurPolePosition", CurrentPoleHeight);
-            telemetry.addData("GroundPoleHeight", GroundPoleHeight);
-            telemetry.addData("LowPoleHeight", LowPoleHeight);
-            telemetry.addData("MediumPoleHeight", MediumPoleHeight);
-            telemetry.addData("HighPoleHeight", HighPoleHeight);
-            telemetry.addData("lowerElbow", lowerElbow);
+
+            telemetry.addData("CurFingerHeight", CurrentFingerHeight);
+            telemetry.addData("FingerPushed", FingerPushed);
             telemetry.addData("SpinnerPosition", Spinner.getController().getServoPosition(Spinner.getPortNumber()));
             telemetry.update();
             OldFingerPushed = FingerPushed;
-            OldLowerElbow = lowerElbow;
             OldElbowPushed = ElbowPushed;
+            OldLowFingerHeight = LowFingerHeight;
+            OldMediumFingerHeight = MediumFingerHeight;
+            OldHighFingerHeight = HighFingerHeight;
         }
     }
 
