@@ -1,8 +1,16 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.vuforia.Image;
+import com.vuforia.PIXEL_FORMAT;
+import com.vuforia.Vuforia;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -12,22 +20,12 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import com.vuforia.Image;
-import com.vuforia.PIXEL_FORMAT;
-import com.vuforia.Vuforia;
-
 import java.nio.ByteBuffer;
 import java.util.Timer;
 import java.util.TimerTask;
 
-@Autonomous(name="EncoderNessieAuto")
-public class EncoderNessieAuto extends LinearOpMode {
+@Autonomous(name="EncoderNessieAutoL")
+public class EncoderNessieAutoL extends LinearOpMode {
 
     class lowerArmToLowPosition extends TimerTask {
         public void run() {
@@ -132,9 +130,9 @@ public class EncoderNessieAuto extends LinearOpMode {
                     ElbowR.getController().setServoPosition(ElbowR.getPortNumber(), ElbowRIntermediatePosition);
                 })
                 .lineTo(new Vector2d(36, -14))
-                .turn(Math.toRadians(90))
-                .lineTo(new Vector2d(48, -14))
-                .turn(ANGLE_1)
+                .turn(Math.toRadians(-90))
+                .lineTo(new Vector2d(24, -14))
+                .turn(-ANGLE_1)
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     moveSlidePack(NessieTeleop.SlidePackDirection.UP, SlidePackSpeed, 1700);
                 })
@@ -152,8 +150,8 @@ public class EncoderNessieAuto extends LinearOpMode {
                     moveSlidePack(NessieTeleop.SlidePackDirection.DOWN, SlidePackSpeed, 1700);
                 })
                 .waitSeconds(2.5)
-                .turn(-ANGLE_1)
-                .lineTo(new Vector2d(59.5, -14))
+                .turn(ANGLE_1)
+                .lineTo(new Vector2d(12, -14))
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     timer.schedule(new closeClaw(), 0);
                 })
@@ -162,8 +160,8 @@ public class EncoderNessieAuto extends LinearOpMode {
                     ElbowR.getController().setServoPosition(ElbowR.getPortNumber(), ElbowRIntermediatePosition);
                 })
                 .waitSeconds(1)
-                .lineTo(new Vector2d(48, -14))
-                .turn(ANGLE_1)
+                .lineTo(new Vector2d(24, -14))
+                .turn(-ANGLE_1)
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     moveSlidePack(NessieTeleop.SlidePackDirection.UP, SlidePackSpeed, 1700);
                 })
@@ -182,7 +180,7 @@ public class EncoderNessieAuto extends LinearOpMode {
                     moveSlidePack(NessieTeleop.SlidePackDirection.DOWN, SlidePackSpeed, 1700);
                 })
                 .waitSeconds(2.5)
-                .turn(-ANGLE_1);
+                .turn(ANGLE_1);
 
         boolean isCameraReady = getCameraReady();
 
