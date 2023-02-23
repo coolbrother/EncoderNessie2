@@ -31,6 +31,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -89,7 +90,7 @@ public class NessieTeleop extends LinearOpMode {
     private final double ElbowLBackwardPosition = 0.95;
     private final double ElbowLIntermediatePosition = 0.39;
     private final double ElbowRForwardPosition = 0.81;
-    private final double ElbowRBackwardPosition = 0.05;
+    private final double ElbowRBackwardPosition = 0.02;
     private final double ElbowRIntermediatePosition = 0.575;
     private PoleHeight CurrentPoleHeight = PoleHeight.GROUND;
     private FingerHeight CurrentFingerHeight = FingerHeight.LOW;
@@ -232,7 +233,7 @@ public class NessieTeleop extends LinearOpMode {
 
 //            boolean temp2 = isWithinRange(Spinner.getController().getServoPosition(Spinner.getPortNumber()), SpinnerForwardPosition, 0.1);
 
-            boolean areElbowsForward = isWithinRange(ElbowR.getController().getServoPosition(ElbowR.getPortNumber()), ElbowRForwardPosition, 0.1);
+            boolean areElbowsForward = isWithinRange(ElbowR.getController().getServoPosition(ElbowR.getPortNumber()), ElbowRForwardPosition, 0.01);
             boolean areElbowsIntermediate = isWithinRange(ElbowR.getController().getServoPosition(ElbowR.getPortNumber()), ElbowRIntermediatePosition, 0.01);
 
             if (FingerPushed != OldFingerPushed && FingerPushed) {
