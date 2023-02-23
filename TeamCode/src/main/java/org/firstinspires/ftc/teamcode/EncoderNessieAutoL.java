@@ -40,15 +40,15 @@ public class EncoderNessieAutoL extends LinearOpMode {
     class lowerArmToMediumPosition extends TimerTask {
         public void run() {
 
-            ElbowL.getController().setServoPosition(ElbowL.getPortNumber(), ElbowLBackwardPosition - 0.05);
-            ElbowR.getController().setServoPosition(ElbowR.getPortNumber(), ElbowRBackwardPosition + 0.05);
+            ElbowL.getController().setServoPosition(ElbowL.getPortNumber(), ElbowLBackwardPosition - 0.07);
+            ElbowR.getController().setServoPosition(ElbowR.getPortNumber(), ElbowRBackwardPosition + 0.07);
         }
     }
 
     class lowerArmToHighPosition extends TimerTask {
         public void run() {
-            ElbowL.getController().setServoPosition(ElbowL.getPortNumber(), ElbowLBackwardPosition - 0.1);
-            ElbowR.getController().setServoPosition(ElbowR.getPortNumber(), ElbowRBackwardPosition + 0.1);
+            ElbowL.getController().setServoPosition(ElbowL.getPortNumber(), ElbowLBackwardPosition - 0.12);
+            ElbowR.getController().setServoPosition(ElbowR.getPortNumber(), ElbowRBackwardPosition + 0.12);
 
             telemetry.addData("AAAAA", 3);
             telemetry.update();
@@ -67,6 +67,7 @@ public class EncoderNessieAutoL extends LinearOpMode {
         }
     }
     private final int numberOfRowsToScanInImage = 30;
+    private final int timeToRaiseArmToMediumJunction = 1000;
     private Servo Finger;
     private CRServo Spinner;
     private CRServo ElbowL;
@@ -118,7 +119,7 @@ public class EncoderNessieAutoL extends LinearOpMode {
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
-        Pose2d startPose = new Pose2d(36, -63.5, Math.toRadians(90));
+        Pose2d startPose = new Pose2d(36, -61, Math.toRadians(90));
 
         drive.setPoseEstimate(startPose);
 
@@ -134,7 +135,7 @@ public class EncoderNessieAutoL extends LinearOpMode {
                 .lineTo(new Vector2d(24, -14))
                 .turn(-ANGLE_1)
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                    moveSlidePack(NessieTeleop.SlidePackDirection.UP, SlidePackSpeed, 1700);
+                    moveSlidePack(NessieTeleop.SlidePackDirection.UP, SlidePackSpeed, timeToRaiseArmToMediumJunction);
                 })
                 .UNSTABLE_addTemporalMarkerOffset(0.7, () -> {
                     Spinner.getController().setServoPosition(Spinner.getPortNumber(), SpinnerForwardPosition);
@@ -147,7 +148,7 @@ public class EncoderNessieAutoL extends LinearOpMode {
                 .UNSTABLE_addTemporalMarkerOffset(2.5, () -> {
                     timer.schedule(new lowerArmToLowPosition(), 0);
                     Spinner.getController().setServoPosition(Spinner.getPortNumber(), SpinnerBackwardPosition);
-                    moveSlidePack(NessieTeleop.SlidePackDirection.DOWN, SlidePackSpeed, 1700);
+                    moveSlidePack(NessieTeleop.SlidePackDirection.DOWN, SlidePackSpeed, timeToRaiseArmToMediumJunction);
                 })
                 .waitSeconds(2.5)
                 .turn(ANGLE_1)
@@ -163,7 +164,7 @@ public class EncoderNessieAutoL extends LinearOpMode {
                 .lineTo(new Vector2d(24, -14))
                 .turn(-ANGLE_1)
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                    moveSlidePack(NessieTeleop.SlidePackDirection.UP, SlidePackSpeed, 1700);
+                    moveSlidePack(NessieTeleop.SlidePackDirection.UP, SlidePackSpeed, timeToRaiseArmToMediumJunction);
                 })
                 .UNSTABLE_addTemporalMarkerOffset(0.7, () -> {
                     Spinner.getController().setServoPosition(Spinner.getPortNumber(), SpinnerForwardPosition);
@@ -177,7 +178,7 @@ public class EncoderNessieAutoL extends LinearOpMode {
                 .UNSTABLE_addTemporalMarkerOffset(2.5, () -> {
                     Spinner.getController().setServoPosition(Spinner.getPortNumber(), SpinnerIntermediatePosition);
                     timer.schedule(new lowerArmToLowPosition(), 0);
-                    moveSlidePack(NessieTeleop.SlidePackDirection.DOWN, SlidePackSpeed, 1700);
+                    moveSlidePack(NessieTeleop.SlidePackDirection.DOWN, SlidePackSpeed, timeToRaiseArmToMediumJunction);
                 })
                 .waitSeconds(2.5)
                 .turn(ANGLE_1);
