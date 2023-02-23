@@ -1,8 +1,16 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.vuforia.Image;
+import com.vuforia.PIXEL_FORMAT;
+import com.vuforia.Vuforia;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -12,22 +20,12 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import com.vuforia.Image;
-import com.vuforia.PIXEL_FORMAT;
-import com.vuforia.Vuforia;
-
 import java.nio.ByteBuffer;
 import java.util.Timer;
 import java.util.TimerTask;
 
-@Autonomous(name="EncoderNessieAuto")
-public class EncoderNessieAuto extends LinearOpMode {
+@Autonomous(name="ParkingOnlyEncoderNessieAuto")
+public class ParkingOnlyEncoderNessieAuto extends LinearOpMode {
 
     class lowerArmToLowPosition extends TimerTask {
         public void run() {
@@ -126,64 +124,8 @@ public class EncoderNessieAuto extends LinearOpMode {
         drive.setPoseEstimate(startPose);
 
         TrajectorySequenceBuilder tsb = drive.trajectorySequenceBuilder(startPose)
-                .UNSTABLE_addTemporalMarkerOffset(0.5, () -> {
-                    Finger.setPosition(FingerGrabPosition);
-                    Spinner.getController().setServoPosition(Spinner.getPortNumber(), SpinnerIntermediatePosition);
-                    ElbowL.getController().setServoPosition(ElbowL.getPortNumber(), ElbowLIntermediatePosition);
-                    ElbowR.getController().setServoPosition(ElbowR.getPortNumber(), ElbowRIntermediatePosition);
-                })
                 .lineTo(new Vector2d(36, -14))
-                .turn(Math.toRadians(90))
-                .lineTo(new Vector2d(48, -14))
-                .turn(ANGLE_1)
-                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                    moveSlidePack(NessieTeleop.SlidePackDirection.UP, SlidePackSpeed, timeToRaiseArmToMediumJunction);
-                })
-                .UNSTABLE_addTemporalMarkerOffset(0.7, () -> {
-                    Spinner.getController().setServoPosition(Spinner.getPortNumber(), SpinnerForwardPosition);
-                    ElbowL.getController().setServoPosition(ElbowL.getPortNumber(), ElbowLForwardPosition);
-                    ElbowR.getController().setServoPosition(ElbowR.getPortNumber(), ElbowRForwardPosition);
-                })
-                .UNSTABLE_addTemporalMarkerOffset(2, () -> {
-                    timer.schedule(new openClaw(), 0);
-                })
-                .UNSTABLE_addTemporalMarkerOffset(2.5, () -> {
-                    timer.schedule(new lowerArmToLowPosition(), 0);
-                    Spinner.getController().setServoPosition(Spinner.getPortNumber(), SpinnerBackwardPosition);
-                    moveSlidePack(NessieTeleop.SlidePackDirection.DOWN, SlidePackSpeed, timeToRaiseArmToMediumJunction);
-                })
-                .waitSeconds(2.5)
-                .turn(-ANGLE_1)
-                .lineTo(new Vector2d(59.5, -14))
-                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                    timer.schedule(new closeClaw(), 0);
-                })
-                .UNSTABLE_addTemporalMarkerOffset(0.3, () -> {
-                    ElbowL.getController().setServoPosition(ElbowL.getPortNumber(), ElbowLIntermediatePosition);
-                    ElbowR.getController().setServoPosition(ElbowR.getPortNumber(), ElbowRIntermediatePosition);
-                })
-                .waitSeconds(1)
-                .lineTo(new Vector2d(48, -14))
-                .turn(ANGLE_1)
-                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                    moveSlidePack(NessieTeleop.SlidePackDirection.UP, SlidePackSpeed, timeToRaiseArmToMediumJunction);
-                })
-                .UNSTABLE_addTemporalMarkerOffset(0.7, () -> {
-                    Spinner.getController().setServoPosition(Spinner.getPortNumber(), SpinnerForwardPosition);
-                    ElbowL.getController().setServoPosition(ElbowL.getPortNumber(), ElbowLForwardPosition);
-                    ElbowR.getController().setServoPosition(ElbowR.getPortNumber(), ElbowRForwardPosition);
-                })
-                .UNSTABLE_addTemporalMarkerOffset(2, () -> {
-                    timer.schedule(new openClaw(), 0);
-                    timer.schedule(new closeClaw(), 400);
-                })
-                .UNSTABLE_addTemporalMarkerOffset(2.5, () -> {
-                    Spinner.getController().setServoPosition(Spinner.getPortNumber(), SpinnerIntermediatePosition);
-                    timer.schedule(new lowerArmToLowPosition(), 0);
-                    moveSlidePack(NessieTeleop.SlidePackDirection.DOWN, SlidePackSpeed, timeToRaiseArmToMediumJunction);
-                })
-                .waitSeconds(2.5)
-                .turn(-ANGLE_1);
+                .turn(Math.toRadians(90));
 
         boolean isCameraReady = getCameraReady();
 
@@ -212,10 +154,6 @@ public class EncoderNessieAuto extends LinearOpMode {
         }
 
         TrajectorySequence ts = tsb.waitSeconds(30).build();
-
-        Finger.setPosition(FingerGrabPosition);
-        VerticalSlidePackL.setPower(0.05);
-        VerticalSlidePackR.setPower(0.05);
 
         drive.followTrajectorySequence(ts);
     }
