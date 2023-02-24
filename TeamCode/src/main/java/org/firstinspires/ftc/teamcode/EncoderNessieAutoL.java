@@ -49,8 +49,8 @@ public class EncoderNessieAutoL extends LinearOpMode {
 
     class lowerArmToHighPosition extends TimerTask {
         public void run() {
-            ElbowL.getController().setServoPosition(ElbowL.getPortNumber(), ElbowLBackwardPosition - 0.08);
-            ElbowR.getController().setServoPosition(ElbowR.getPortNumber(), ElbowRBackwardPosition + 0.08);
+            ElbowL.getController().setServoPosition(ElbowL.getPortNumber(), ElbowLBackwardPosition - 0.07);
+            ElbowR.getController().setServoPosition(ElbowR.getPortNumber(), ElbowRBackwardPosition + 0.07);
 
             telemetry.addData("AAAAA", 3);
             telemetry.update();
@@ -69,7 +69,7 @@ public class EncoderNessieAutoL extends LinearOpMode {
         }
     }
     private final int numberOfRowsToScanInImage = 30;
-    private final int timeToRaiseArmToMediumJunction = 1000;
+    private final int timeToRaiseArmToMediumJunction = 1050;
     private Servo Finger;
     private CRServo Spinner;
     private CRServo ElbowL;
@@ -99,7 +99,7 @@ public class EncoderNessieAutoL extends LinearOpMode {
 
     private Timer timer = new Timer();
     private ElapsedTime eTime = new ElapsedTime();
-    private final double ANGLE_1 = -0.40;
+    private final double ANGLE_1 = -0.55;
 
     @Override
     public void runOpMode() {
@@ -132,9 +132,9 @@ public class EncoderNessieAutoL extends LinearOpMode {
                     ElbowL.getController().setServoPosition(ElbowL.getPortNumber(), ElbowLIntermediatePosition);
                     ElbowR.getController().setServoPosition(ElbowR.getPortNumber(), ElbowRIntermediatePosition);
                 })
-                .lineTo(new Vector2d(36, -14))
+                .lineTo(new Vector2d(36, -13))
                 .turn(Math.toRadians(-90))
-                .lineTo(new Vector2d(24, -14))
+                .lineTo(new Vector2d(25, -13))
                 .turn(ANGLE_1)
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     moveSlidePack(NessieTeleop.SlidePackDirection.UP, SlidePackSpeed, timeToRaiseArmToMediumJunction);
@@ -150,11 +150,11 @@ public class EncoderNessieAutoL extends LinearOpMode {
                 .UNSTABLE_addTemporalMarkerOffset(2.5, () -> {
                     timer.schedule(new lowerArmToHighPosition(), 0);
                     Spinner.getController().setServoPosition(Spinner.getPortNumber(), SpinnerBackwardPosition);
-                    moveSlidePack(NessieTeleop.SlidePackDirection.DOWN, SlidePackSpeed, timeToRaiseArmToMediumJunction);
+                    moveSlidePack(NessieTeleop.SlidePackDirection.DOWN, SlidePackSpeed, timeToRaiseArmToMediumJunction-50);
                 })
                 .waitSeconds(2.5)
                 .turn(-ANGLE_1)
-                .lineTo(new Vector2d(12, -14))
+                .lineTo(new Vector2d(16, -13))
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     timer.schedule(new closeClaw(), 0);
                 })
@@ -164,7 +164,7 @@ public class EncoderNessieAutoL extends LinearOpMode {
                     ElbowR.getController().setServoPosition(ElbowR.getPortNumber(), ElbowRIntermediatePosition);
                 })
                 .waitSeconds(1)
-                .lineTo(new Vector2d(24, -14))
+                .lineTo(new Vector2d(25, -13))
                 .turn(ANGLE_1)
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     moveSlidePack(NessieTeleop.SlidePackDirection.UP, SlidePackSpeed, timeToRaiseArmToMediumJunction);
@@ -205,10 +205,10 @@ public class EncoderNessieAutoL extends LinearOpMode {
                 tsb.lineTo(new Vector2d(12, -13));
                 break;
             case DOS:
-                tsb.lineTo(new Vector2d(38, -14));
+                tsb.lineTo(new Vector2d(37, -14));
                 break;
             case TRES:
-                tsb.lineTo(new Vector2d(62, -14));
+                tsb.lineTo(new Vector2d(61, -14));
                 break;
         }
 

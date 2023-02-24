@@ -49,8 +49,8 @@ public class EncoderNessieAuto extends LinearOpMode {
 
     class lowerArmToHighPosition extends TimerTask {
         public void run() {
-            ElbowL.getController().setServoPosition(ElbowL.getPortNumber(), ElbowLBackwardPosition - 0.08);
-            ElbowR.getController().setServoPosition(ElbowR.getPortNumber(), ElbowRBackwardPosition + 0.08);
+            ElbowL.getController().setServoPosition(ElbowL.getPortNumber(), ElbowLBackwardPosition - 0.07);
+            ElbowR.getController().setServoPosition(ElbowR.getPortNumber(), ElbowRBackwardPosition + 0.07);
 
             telemetry.addData("AAAAA", 3);
             telemetry.update();
@@ -69,7 +69,7 @@ public class EncoderNessieAuto extends LinearOpMode {
         }
     }
     private final int numberOfRowsToScanInImage = 30;
-    private final int timeToRaiseArmToMediumJunction = 1200;
+    private final int timeToRaiseArmToMediumJunction = 1000;
     private Servo Finger;
     private CRServo Spinner;
     private CRServo ElbowL;
@@ -99,7 +99,7 @@ public class EncoderNessieAuto extends LinearOpMode {
 
     private Timer timer = new Timer();
     private ElapsedTime eTime = new ElapsedTime();
-    private final double ANGLE_1 = 0.40;
+    private final double ANGLE_1 = 0.46;
 
     @Override
     public void runOpMode() {
