@@ -42,15 +42,15 @@ public class EncoderNessieAuto extends LinearOpMode {
     class lowerArmToMediumPosition extends TimerTask {
         public void run() {
 
-            ElbowL.getController().setServoPosition(ElbowL.getPortNumber(), ElbowLBackwardPosition - 0.03);
-            ElbowR.getController().setServoPosition(ElbowR.getPortNumber(), ElbowRBackwardPosition + 0.03);
+            ElbowL.getController().setServoPosition(ElbowL.getPortNumber(), ElbowLBackwardPosition - 0.05);
+            ElbowR.getController().setServoPosition(ElbowR.getPortNumber(), ElbowRBackwardPosition + 0.05);
         }
     }
 
     class lowerArmToHighPosition extends TimerTask {
         public void run() {
-            ElbowL.getController().setServoPosition(ElbowL.getPortNumber(), ElbowLBackwardPosition - 0.07);
-            ElbowR.getController().setServoPosition(ElbowR.getPortNumber(), ElbowRBackwardPosition + 0.07);
+            ElbowL.getController().setServoPosition(ElbowL.getPortNumber(), ElbowLBackwardPosition - 0.08);
+            ElbowR.getController().setServoPosition(ElbowR.getPortNumber(), ElbowRBackwardPosition + 0.08);
 
             telemetry.addData("AAAAA", 3);
             telemetry.update();

@@ -121,8 +121,8 @@ public class NessieTeleop extends LinearOpMode {
 
         class lowerArmToHighPosition extends TimerTask {
             public void run() {
-                ElbowL.getController().setServoPosition(ElbowL.getPortNumber(), ElbowLBackwardPosition - 0.1);
-                ElbowR.getController().setServoPosition(ElbowR.getPortNumber(), ElbowRBackwardPosition + 0.1);
+                ElbowL.getController().setServoPosition(ElbowL.getPortNumber(), ElbowLBackwardPosition - 0.08);
+                ElbowR.getController().setServoPosition(ElbowR.getPortNumber(), ElbowRBackwardPosition + 0.08);
 
                 telemetry.addData("AAAAA", 3);
                 telemetry.update();
