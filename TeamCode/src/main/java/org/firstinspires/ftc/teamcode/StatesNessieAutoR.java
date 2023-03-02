@@ -26,8 +26,8 @@ import java.nio.ByteBuffer;
 import java.util.Timer;
 import java.util.TimerTask;
 
-@Autonomous(name="EncoderNessieAuto")
-public class EncoderNessieAuto extends LinearOpMode {
+@Autonomous(name="StatesNessieAutoR")
+public class StatesNessieAutoR extends LinearOpMode {
 
     class lowerArmToLowPosition extends TimerTask {
         public void run() {
