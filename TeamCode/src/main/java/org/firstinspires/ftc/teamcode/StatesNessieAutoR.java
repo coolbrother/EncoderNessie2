@@ -134,7 +134,7 @@ public class StatesNessieAutoR extends LinearOpMode {
                     ElbowR.getController().setServoPosition(ElbowR.getPortNumber(), ElbowRIntermediatePosition);
                 })
                 .lineToLinearHeading(new Pose2d(36, -16, Math.toRadians(90)))
-                .splineToConstantHeading(new Vector2d(60, -4), Math.toRadians(0)
+                .splineToConstantHeading(new Vector2d(60, -4), Math.toRadians(0))
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     moveSlidePack(NessieTeleop.SlidePackDirection.UP, SlidePackSpeed, timeToRaiseArmToHighJunction);
                 })
@@ -153,7 +153,7 @@ public class StatesNessieAutoR extends LinearOpMode {
                 })
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     timer.schedule(new closeClaw(), 0);
-//                 })
+                 });
 //                 .UNSTABLE_addTemporalMarkerOffset(0.3, () -> {
 //                     Spinner.getController().setServoPosition(Spinner.getPortNumber(), SpinnerIntermediatePosition);
 //                     ElbowL.getController().setServoPosition(ElbowL.getPortNumber(), ElbowLIntermediatePosition);
