@@ -70,7 +70,7 @@ public class StatesNessieAutoR extends LinearOpMode {
     }
     private final int numberOfRowsToScanInImage = 30;
     private final int timeToRaiseArmToMediumJunction = 1000;
-    private final int timeToRaiseArmToHighJunction = 1200;
+    private final int timeToRaiseArmToHighJunction = 1260;
     private Servo Finger;
     private CRServo Spinner;
     private CRServo ElbowL;
@@ -78,8 +78,8 @@ public class StatesNessieAutoR extends LinearOpMode {
     private DcMotor VerticalSlidePackL;
     private DcMotor VerticalSlidePackR;
     private final double SlidePackSpeed = 1.0;
-    private final double FingerReleasePosition = 0.61;
-    private final double FingerGrabPosition = 0.65;
+    private final double FingerReleasePosition = 0.76;
+    private final double FingerGrabPosition = 0.54;
     private final double SpinnerForwardPosition = .6;//0.9;
     private final double SpinnerBackwardPosition = .05; //0.35;
     private final double SpinnerIntermediatePosition = .78; //0.68;
@@ -100,7 +100,7 @@ public class StatesNessieAutoR extends LinearOpMode {
 
     private Timer timer = new Timer();
     private ElapsedTime eTime = new ElapsedTime();
-    private final double ANGLE_1 = 0.46;
+    private final double ANGLE_1 = 0.33;
 
     @Override
     public void runOpMode() {
@@ -133,8 +133,12 @@ public class StatesNessieAutoR extends LinearOpMode {
                     ElbowL.getController().setServoPosition(ElbowL.getPortNumber(), ElbowLIntermediatePosition);
                     ElbowR.getController().setServoPosition(ElbowR.getPortNumber(), ElbowRIntermediatePosition);
                 })
-                .lineToLinearHeading(new Pose2d(36, -16, Math.toRadians(90)))
-                .splineToConstantHeading(new Vector2d(60, -4), Math.toRadians(0))
+                .lineTo(new Vector2d(36, -12))
+                .turn(Math.toRadians(90))
+                .lineTo(new Vector2d(57.25, -11))
+                .turn(-ANGLE_1)
+                .strafeRight(1)
+                .waitSeconds(1)
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     moveSlidePack(NessieTeleop.SlidePackDirection.UP, SlidePackSpeed, timeToRaiseArmToHighJunction);
                 })
@@ -146,14 +150,16 @@ public class StatesNessieAutoR extends LinearOpMode {
                 .UNSTABLE_addTemporalMarkerOffset(2, () -> {
                     timer.schedule(new openClaw(), 0);
                 })
-                .UNSTABLE_addTemporalMarkerOffset(2.5, () -> {
-                    timer.schedule(new lowerArmToHighPosition(), 0);
+                .UNSTABLE_addTemporalMarkerOffset(2.3, () -> {
                     Spinner.getController().setServoPosition(Spinner.getPortNumber(), SpinnerBackwardPosition);
-                    moveSlidePack(NessieTeleop.SlidePackDirection.DOWN, SlidePackSpeed, timeToRaiseArmToHighJunction);
+                    timer.schedule(new lowerArmToLowPosition(), 0);
                 })
-                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+                .UNSTABLE_addTemporalMarkerOffset(3, () -> {
+                    moveSlidePack(NessieTeleop.SlidePackDirection.DOWN, SlidePackSpeed, timeToRaiseArmToHighJunction - 780);
+                })
+                .UNSTABLE_addTemporalMarkerOffset(4, () -> {
                     timer.schedule(new closeClaw(), 0);
-                 });
+                })
 //                 .UNSTABLE_addTemporalMarkerOffset(0.3, () -> {
 //                     Spinner.getController().setServoPosition(Spinner.getPortNumber(), SpinnerIntermediatePosition);
 //                     ElbowL.getController().setServoPosition(ElbowL.getPortNumber(), ElbowLIntermediatePosition);
@@ -179,7 +185,7 @@ public class StatesNessieAutoR extends LinearOpMode {
 //                     Spinner.getController().setServoPosition(Spinner.getPortNumber(), SpinnerIntermediatePosition);
 //                     moveSlidePack(NessieTeleop.SlidePackDirection.DOWN, SlidePackSpeed, timeToRaiseArmToHighJunction);
 //                 })
-//                 .waitSeconds(2.5)
+                 .waitSeconds(30);
 //                 .turn(-ANGLE_1);
 
         boolean isCameraReady = getCameraReady();
