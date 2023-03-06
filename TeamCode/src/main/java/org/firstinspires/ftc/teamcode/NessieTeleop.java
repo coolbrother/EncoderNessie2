@@ -84,14 +84,14 @@ public class NessieTeleop extends LinearOpMode {
     private final double FingerGrabPosition = 0.54;
     private final double SpinnerForwardPosition = .6;//0.9;
     private final double SpinnerBackwardPosition = .05; //0.35;
-    private final double SpinnerIntermediatePosition = .78; //0.68;
+    private final double SpinnerIntermediatePosition = 0.81; // .78;
     //    private final double SpinnerGrabbingPosition = 1.0;
     private final double ElbowLForwardPosition = 0.15;
     private final double ElbowLBackwardPosition = 0.95;
-    private final double ElbowLIntermediatePosition = 0.39;
+    private final double ElbowLIntermediatePosition = 0.36; // 0.39;
     private final double ElbowRForwardPosition = 0.81;
     private final double ElbowRBackwardPosition = 0.02;
-    private final double ElbowRIntermediatePosition = 0.575;
+    private final double ElbowRIntermediatePosition = 0.605; // 0.575;
     private PoleHeight CurrentPoleHeight = PoleHeight.GROUND;
     private FingerHeight CurrentFingerHeight = FingerHeight.LOW;
     private final double BATTERY_LEVEL = 1;
