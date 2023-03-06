@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import android.annotation.SuppressLint;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gyroscope;
 import com.qualcomm.robotcore.hardware.Blinker;
@@ -37,6 +38,7 @@ import java.util.List;
 
 
 @Autonomous(name="NessieAutoRIGHT")
+@Disabled
 public class NessieAutoR extends LinearOpMode {
 
     enum DriveDirection {

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -27,6 +28,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 @Autonomous(name="StatesNessieAutoR")
+@Disabled
 public class StatesNessieAutoR extends LinearOpMode {
 
     class lowerArmToLowPosition extends TimerTask {
