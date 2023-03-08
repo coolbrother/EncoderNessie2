@@ -49,8 +49,8 @@ public class EncoderNessieAuto extends LinearOpMode {
 
     class lowerArmToHighPosition extends TimerTask {
         public void run() {
-            ElbowL.getController().setServoPosition(ElbowL.getPortNumber(), ElbowLBackwardPosition - 0.12);
-            ElbowR.getController().setServoPosition(ElbowR.getPortNumber(), ElbowRBackwardPosition + 0.12);
+            ElbowL.getController().setServoPosition(ElbowL.getPortNumber(), ElbowLBackwardPosition - 0.1);
+            ElbowR.getController().setServoPosition(ElbowR.getPortNumber(), ElbowRBackwardPosition + 0.1);
 
             telemetry.addData("AAAAA", 3);
             telemetry.update();
@@ -69,7 +69,7 @@ public class EncoderNessieAuto extends LinearOpMode {
         }
     }
     private final int numberOfRowsToScanInImage = 30;
-    private final int timeToRaiseArmToMediumJunction = 520;
+    private final int timeToRaiseArmToMediumJunction = 500;
     private Servo Finger;
     private CRServo Spinner;
     private CRServo ElbowL;
@@ -81,14 +81,14 @@ public class EncoderNessieAuto extends LinearOpMode {
     private final double FingerGrabPosition = 0.5;
     private final double SpinnerForwardPosition = .6;//0.9;
     private final double SpinnerBackwardPosition = .02; //0.35;
-    private final double SpinnerIntermediatePosition = 0.78; // .78;
+    private final double SpinnerIntermediatePosition = 0.75; // .78;
     //    private final double SpinnerGrabbingPosition = 1.0;
     private final double ElbowLForwardPosition = 0.1;
     private final double ElbowLBackwardPosition = 0.90;
-    private final double ElbowLIntermediatePosition = 0.29; // 0.39;
+    private final double ElbowLIntermediatePosition = 0.25; // 0.39;
     private final double ElbowRForwardPosition = 0.83;
     private final double ElbowRBackwardPosition = 0.17;
-    private final double ElbowRIntermediatePosition = 0.685; // 0.575;
+    private final double ElbowRIntermediatePosition = 0.725; // 0.575;
     private NessieTeleop.PoleHeight CurrentPoleHeight = NessieTeleop.PoleHeight.GROUND;
     private NessieTeleop.FingerHeight CurrentFingerHeight = NessieTeleop.FingerHeight.LOW;
     private NessieAuto.ParkingSpace parkingSpace = NessieAuto.ParkingSpace.UNO;
@@ -99,7 +99,7 @@ public class EncoderNessieAuto extends LinearOpMode {
 
     private Timer timer = new Timer();
     private ElapsedTime eTime = new ElapsedTime();
-    private final double ANGLE_1 = 0.83;
+    private final double ANGLE_1 = 0.82;
 
     @Override
     public void runOpMode() {
@@ -137,7 +137,7 @@ public class EncoderNessieAuto extends LinearOpMode {
 //                .lineTo(new Vector2d(44, -14))
                 .turn(ANGLE_1)
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                    moveSlidePack(NessieTeleop.SlidePackDirection.UP, SlidePackSpeed, timeToRaiseArmToMediumJunction);
+                    moveSlidePack(NessieTeleop.SlidePackDirection.UP, SlidePackSpeed, timeToRaiseArmToMediumJunction - 30);
                 })
 //                .UNSTABLE_addTemporalMarkerOffset(0.7, () -> {
 //                    Spinner.getController().setServoPosition(Spinner.getPortNumber(), SpinnerForwardPosition);
@@ -154,7 +154,7 @@ public class EncoderNessieAuto extends LinearOpMode {
                 })
                 .waitSeconds(2.5)
                 .turn(-ANGLE_1)
-                .lineTo(new Vector2d(56, -13))
+                .lineTo(new Vector2d(55, -13))
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     timer.schedule(new closeClaw(), 0);
                 })

@@ -84,13 +84,13 @@ public class NessieTeleop extends LinearOpMode {
     private final double FingerGrabPosition = 0.5;
     private final double SpinnerForwardPosition = .6;//0.9;
     private final double SpinnerBackwardPosition = .02; //0.35;
-    private final double SpinnerIntermediatePosition = 0.78; // .78;
+    private final double SpinnerIntermediatePosition = 0.76; // .78;
     //    private final double SpinnerGrabbingPosition = 1.0;
     private final double ElbowLForwardPosition = 0.1;
-    private final double ElbowLBackwardPosition = 0.90;
+    private final double ElbowLBackwardPosition = 0.88;
     private final double ElbowLIntermediatePosition = 0.29; // 0.39;
     private final double ElbowRForwardPosition = 0.83;
-    private final double ElbowRBackwardPosition = 0.17;
+    private final double ElbowRBackwardPosition = 0.19;
     private final double ElbowRIntermediatePosition = 0.685; // 0.575;
     private PoleHeight CurrentPoleHeight = PoleHeight.GROUND;
     private FingerHeight CurrentFingerHeight = FingerHeight.LOW;
@@ -121,8 +121,8 @@ public class NessieTeleop extends LinearOpMode {
 
         class lowerArmToHighPosition extends TimerTask {
             public void run() {
-                ElbowL.getController().setServoPosition(ElbowL.getPortNumber(), ElbowLBackwardPosition - 0.08);
-                ElbowR.getController().setServoPosition(ElbowR.getPortNumber(), ElbowRBackwardPosition + 0.08);
+                ElbowL.getController().setServoPosition(ElbowL.getPortNumber(), ElbowLBackwardPosition - 0.1);
+                ElbowR.getController().setServoPosition(ElbowR.getPortNumber(), ElbowRBackwardPosition + 0.1);
 
                 telemetry.addData("AAAAA", 3);
                 telemetry.update();
