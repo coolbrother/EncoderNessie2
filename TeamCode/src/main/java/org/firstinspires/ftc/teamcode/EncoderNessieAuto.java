@@ -99,7 +99,7 @@ public class EncoderNessieAuto extends LinearOpMode {
 
     private Timer timer = new Timer();
     private ElapsedTime eTime = new ElapsedTime();
-    private final double ANGLE_1 = 0.82;
+    private final double ANGLE_1 = 0.84;
 
     @Override
     public void runOpMode() {
