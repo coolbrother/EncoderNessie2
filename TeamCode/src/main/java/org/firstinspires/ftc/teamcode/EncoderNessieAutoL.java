@@ -69,7 +69,7 @@ public class EncoderNessieAutoL extends LinearOpMode {
         }
     }
     private final int numberOfRowsToScanInImage = 30;
-    private final int timeToRaiseArmToMediumJunction = 470;
+    private final int timeToRaiseArmToMediumJunction = 500;
     private Servo Finger;
     private CRServo Spinner;
     private CRServo ElbowL;
@@ -224,7 +224,7 @@ public class EncoderNessieAutoL extends LinearOpMode {
 
         if (isCameraReady) {
             parkingSpace = getCameraReading();
-            parkingSpace = NessieAuto.ParkingSpace.UNO;
+//            parkingSpace = NessieAuto.ParkingSpace.UNO;
         }
 
         telemetry.addData("parkingSpace", parkingSpace);
@@ -232,13 +232,13 @@ public class EncoderNessieAutoL extends LinearOpMode {
 
         switch (parkingSpace) {
             case UNO:
-                tsb.lineTo(new Vector2d(11, -14));
+                tsb.lineTo(new Vector2d(11, -13));
                 break;
             case DOS:
-                tsb.lineTo(new Vector2d(36, -14));
+                tsb.lineTo(new Vector2d(36, -13));
                 break;
             case TRES:
-                tsb.lineTo(new Vector2d(57, -14));
+                tsb.lineTo(new Vector2d(59, -13));
                 break;
         }
 

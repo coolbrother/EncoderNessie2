@@ -224,7 +224,7 @@ public class EncoderNessieAuto extends LinearOpMode {
 
         if (isCameraReady) {
             parkingSpace = getCameraReading();
-            parkingSpace = NessieAuto.ParkingSpace.UNO;
+//            parkingSpace = NessieAuto.ParkingSpace.UNO;
         }
 
         telemetry.addData("parkingSpace", parkingSpace);
@@ -235,10 +235,10 @@ public class EncoderNessieAuto extends LinearOpMode {
                 tsb.lineTo(new Vector2d(11, -14));
                 break;
             case DOS:
-                tsb.lineTo(new Vector2d(36, -14));
+                tsb.lineTo(new Vector2d(34, -14));
                 break;
             case TRES:
-                tsb.lineTo(new Vector2d(57, -14));
+                tsb.lineTo(new Vector2d(58, -14));
                 break;
         }
 
