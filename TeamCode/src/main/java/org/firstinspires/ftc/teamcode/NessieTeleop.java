@@ -80,8 +80,8 @@ public class NessieTeleop extends LinearOpMode {
     private double turn;
     private final double DriveSpeed = 0.9;
     private final double SlidePackSpeed = 1.0;
-    private final double FingerReleasePosition = 0.76;
-    private final double FingerGrabPosition = 0.5;
+    private final double FingerReleasePosition = 0.71;
+    private final double FingerGrabPosition = 0.45;
     private final double SpinnerForwardPosition = .6;//0.9;
     private final double SpinnerBackwardPosition = .02; //0.35;
     private final double SpinnerIntermediatePosition = 0.65; // .78;

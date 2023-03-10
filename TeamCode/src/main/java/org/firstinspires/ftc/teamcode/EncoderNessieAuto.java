@@ -69,7 +69,7 @@ public class EncoderNessieAuto extends LinearOpMode {
         }
     }
     private final int numberOfRowsToScanInImage = 30;
-    private final int timeToRaiseArmToMediumJunction = 500;
+    private final int timeToRaiseArmToMediumJunction = 520;
     private Servo Finger;
     private CRServo Spinner;
     private CRServo ElbowL;
@@ -77,8 +77,8 @@ public class EncoderNessieAuto extends LinearOpMode {
     private DcMotor VerticalSlidePackL;
     private DcMotor VerticalSlidePackR;
     private final double SlidePackSpeed = 1.0;
-    private final double FingerReleasePosition = 0.76;
-    private final double FingerGrabPosition = 0.5;
+    private final double FingerReleasePosition = 0.71;
+    private final double FingerGrabPosition = 0.45;
     private final double SpinnerForwardPosition = .6;//0.9;
     private final double SpinnerBackwardPosition = .02; //0.35;
     private final double SpinnerIntermediatePosition = 0.75; // .78;

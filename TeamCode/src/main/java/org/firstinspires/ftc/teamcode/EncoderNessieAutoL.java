@@ -69,7 +69,7 @@ public class EncoderNessieAutoL extends LinearOpMode {
         }
     }
     private final int numberOfRowsToScanInImage = 30;
-    private final int timeToRaiseArmToMediumJunction = 500;
+    private final int timeToRaiseArmToMediumJunction = 520;
     private Servo Finger;
     private CRServo Spinner;
     private CRServo ElbowL;
@@ -77,8 +77,8 @@ public class EncoderNessieAutoL extends LinearOpMode {
     private DcMotor VerticalSlidePackL;
     private DcMotor VerticalSlidePackR;
     private final double SlidePackSpeed = 1.0;
-    private final double FingerReleasePosition = 0.76;
-    private final double FingerGrabPosition = 0.5;
+    private final double FingerReleasePosition = 0.71;
+    private final double FingerGrabPosition = 0.45;
     private final double SpinnerForwardPosition = .6;//0.9;
     private final double SpinnerBackwardPosition = .02; //0.35;
     private final double SpinnerIntermediatePosition = 0.75; // .78;
@@ -154,7 +154,7 @@ public class EncoderNessieAutoL extends LinearOpMode {
                 })
                 .waitSeconds(2.5)
                 .turn(-ANGLE_1)
-                .lineTo(new Vector2d(15, -13))
+                .lineTo(new Vector2d(15, -14))
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     timer.schedule(new closeClaw(), 0);
                 })
@@ -184,7 +184,7 @@ public class EncoderNessieAutoL extends LinearOpMode {
                 })
                 .waitSeconds(2.5)
                 .turn(-ANGLE_1)
-                .lineTo(new Vector2d(15, -13))
+                .lineTo(new Vector2d(15, -14))
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     timer.schedule(new closeClaw(), 0);
                 })
@@ -232,7 +232,7 @@ public class EncoderNessieAutoL extends LinearOpMode {
 
         switch (parkingSpace) {
             case UNO:
-                tsb.lineTo(new Vector2d(11, -13));
+                tsb.lineTo(new Vector2d(11, -14));
                 break;
             case DOS:
                 tsb.lineTo(new Vector2d(36, -13));
